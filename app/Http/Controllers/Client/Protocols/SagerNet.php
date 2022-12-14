@@ -72,6 +72,15 @@ class SagerNet
                     $config['sni'] = urlencode($tlsSettings['serverName']);
             }
         }
+        if ((string)$server['network'] === 'tcp') {
+            $tcpSettings = $server['networkSettings'];
+            if (isset($tcpSettings['header']['type'])) {
+                $config['type'] = $server['network'];
+                $config['headerType'] = $tcpSettings['header']['type'];
+            }
+            if (isset($tcpSettings['header']['request']['path'])) $config['path'] = $tcpSettings['header']['request']['path'];
+            if (isset($tcpSettings['header']['request']['headers']['Host'])) $config['host'] = $tcpSettings['header']['request']['headers']['Host'];
+        }
         if ((string)$server['network'] === 'ws') {
             $wsSettings = $server['networkSettings'];
             if (isset($wsSettings['path'])) $config['path'] = $wsSettings['path'];

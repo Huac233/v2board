@@ -70,6 +70,16 @@ class Shadowrocket
                     $config['peer'] = $tlsSettings['serverName'];
             }
         }
+        if ($server['network'] === 'tcp') {
+            $config['obfs'] = "http";
+            if ($server['networkSettings']) {
+                $tcpSettings = $server['networkSettings'];
+                if (isset($tcpSettings['header']['request']['path']) && !empty($tcpSettings['header']['request']['path']))
+                    $config['path'] = $tcpSettings['header']['request']['path'];
+                if (isset($tcpSettings['header']['request']['headers']['Host']) && !empty($tcpSettings['header']['request']['headers']['Host']))
+                    $config['obfsParam'] = $tcpSettings['header']['request']['headers']['Host'];
+            }
+        }
         if ($server['network'] === 'ws') {
             $config['obfs'] = "websocket";
             if ($server['networkSettings']) {
@@ -92,6 +102,9 @@ class Shadowrocket
             } else {
                 $config['host'] = $server['host'];
             }
+        }
+        if ($server['network'] === 'kcp') {
+            $config['obfs'] = "mkcp";
         }
         $query = http_build_query($config, '', '&', PHP_QUERY_RFC3986);
         $uri = "vmess://{$userinfo}?{$query}";

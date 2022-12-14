@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Client\Protocols;
 
 class QuantumultX
 {
-    public $flag = 'quantumult%20x';
+    public $flag = 'quantumultx';
     private $servers;
     private $user;
 
@@ -73,6 +73,16 @@ class QuantumultX
                     $host = $tlsSettings['serverName'];
             }
         }
+        if ($server['network'] === 'tcp') {
+            array_push($config, 'obfs=http');
+            if ($server['networkSettings']) {
+                $tcpSettings = $server['networkSettings'];
+                if (isset($tcpSettings['header']['request']['path']) && !empty($tcpSettings['header']['request']['path']))
+                    array_push($config, "obfs-uri={$tcpSettings['header']['request']['path']}");
+                if (isset($tcpSettings['header']['request']['headers']['Host']) && !empty($tcpSettings['header']['request']['headers']['Host']) && !isset($host))
+                    $host = $tcpSettings['header']['request']['headers']['Host'];
+            }
+        }
         if ($server['network'] === 'ws') {
             if ($server['tls'])
                 array_push($config, 'obfs=wss');
@@ -85,6 +95,9 @@ class QuantumultX
                 if (isset($wsSettings['headers']['Host']) && !empty($wsSettings['headers']['Host']) && !isset($host))
                     $host = $wsSettings['headers']['Host'];
             }
+        }
+        if ($server['network'] === 'kcp') {
+            array_push($config, 'obfs=kcp');
         }
         if (isset($host)) {
             array_push($config, "obfs-host={$host}");
