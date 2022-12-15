@@ -113,6 +113,18 @@ class Clash
                     $array['servername'] = $tlsSettings['serverName'];
             }
         }
+        if ($server['network'] === 'tcp') {
+            $array['network'] = 'http';
+            if ($server['networkSettings']) {
+                $tcpSettings = $server['networkSettings'];
+                $array['http-opts'] = [];
+                if (isset($tcpSettings['header']['request']['path']) && !empty($tcpSettings['header']['request']['path']))
+                    $array['http-opts']['method'] = "GET";
+                    $array['http-opts']['path'] = [ $tcpSettings['header']['request']['path'] ];
+                if (isset($tcpSettings['header']['request']['headers']['Host']) && !empty($tcpSettings['header']['request']['headers']['Host']))
+                    $array['http-opts']['headers'] = ['Host' => [ $tcpSettings['header']['request']['headers']['Host']] ];
+            }
+        }
         if ($server['network'] === 'ws') {
             $array['network'] = 'ws';
             if ($server['networkSettings']) {
@@ -122,10 +134,6 @@ class Clash
                     $array['ws-opts']['path'] = $wsSettings['path'];
                 if (isset($wsSettings['headers']['Host']) && !empty($wsSettings['headers']['Host']))
                     $array['ws-opts']['headers'] = ['Host' => $wsSettings['headers']['Host']];
-                if (isset($wsSettings['path']) && !empty($wsSettings['path']))
-                    $array['ws-path'] = $wsSettings['path'];
-                if (isset($wsSettings['headers']['Host']) && !empty($wsSettings['headers']['Host']))
-                    $array['ws-headers'] = ['Host' => $wsSettings['headers']['Host']];
             }
         }
         if ($server['network'] === 'grpc') {
@@ -136,7 +144,9 @@ class Clash
                 if (isset($grpcSettings['serviceName'])) $array['grpc-opts']['grpc-service-name'] = $grpcSettings['serviceName'];
             }
         }
-
+        if ($server['network'] === 'kcp') {
+            $array['network'] = 'kcp';
+        }
         return $array;
     }
 
