@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Client\Protocols;
 
-class SagerNet
+class AnXray
 {
     public $flag = 'axxray';
     private $servers;
