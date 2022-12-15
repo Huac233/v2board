@@ -122,7 +122,7 @@ class Clash
                     $array['http-opts']['method'] = "GET";
                     $array['http-opts']['path'] = [ $tcpSettings['header']['request']['path'] ];
                 if (isset($tcpSettings['header']['request']['headers']['Host']) && !empty($tcpSettings['header']['request']['headers']['Host']))
-                    $array['http-opts']['headers'] = ['Host' => [ $tcpSettings['header']['request']['headers']['Host']] ];
+                    $array['http-opts']['headers'] = ['Host' => [ $tcpSettings['header']['request']['headers']['Host'] ]];
             }
         }
         if ($server['network'] === 'ws') {
